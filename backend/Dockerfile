@@ -7,6 +7,7 @@ ENV LOG_CHANNEL=stderr
 
 WORKDIR /app
 COPY . .
+RUN chown -R application:application /app
 
 # Runs automatically every time the container starts:
 # installs dependencies, caches config/routes, runs migrations.
