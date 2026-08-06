@@ -14,7 +14,6 @@ export const INCOME_CATEGORIES = [
   { value: 'Salary', icon: 'ti-briefcase', bg: '#E1F5EE', color: '#0F6E56' },
   { value: 'Freelance', icon: 'ti-device-laptop', bg: '#EEEDFE', color: '#534AB7' },
   { value: 'Investment', icon: 'ti-trending-up', bg: '#E1F5EE', color: '#0F6E56' },
-  { value: 'Savings', icon: 'ti-piggy-bank', bg: '#E1F5EE', color: '#0F6E56' },
   { value: 'Others', icon: 'ti-dots-circle-horizontal', bg: '#F0EFF8', color: '#6B6882' },
 ]
 

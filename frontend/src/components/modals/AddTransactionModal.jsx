@@ -6,14 +6,13 @@ import { useToast } from '../../context/ToastContext'
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '../../utils/categories'
 
 export default function AddTransactionModal({ open, onClose }) {
-  const { addTransaction, goals } = useFinance()
+  const { addTransaction } = useFinance()
   const { toast } = useToast()
   const [type, setType] = useState('expense')
   const [form, setForm] = useState({
     description: '',
     amount: '',
     category: 'Food',
-    goal_id: '',
     date: new Date().toISOString().split('T')[0],
     note: ''
   })
@@ -23,9 +22,7 @@ export default function AddTransactionModal({ open, onClose }) {
 
   const hint = type === 'expense'
     ? `This will be deducted from your <strong>${form.category}</strong> budget and added to your expenses.`
-    : form.goal_id
-      ? `This will be moved out of your available savings and tracked toward your selected goal. Your income won't change.`
-      : `This will be added to your total income.`
+    : `This will be added to your total income.`
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -39,16 +36,14 @@ export default function AddTransactionModal({ open, onClose }) {
         description: form.description,
         amount: Number(form.amount),
         category: form.category,
-        goal_id: type === 'income' && form.goal_id ? form.goal_id : null,
         date: form.date,
         note: form.note,
       })
-      toast(type === 'expense' ? 'Expense added!' : form.goal_id ? 'Added to goal!' : 'Income added!')
+      toast(type === 'expense' ? 'Expense added!' : 'Income added!')
       setForm({
         description: '',
         amount: '',
         category: type === 'expense' ? 'Food' : 'Salary',
-        goal_id: '',
         date: new Date().toISOString().split('T')[0],
         note: ''
       })
@@ -74,7 +69,7 @@ export default function AddTransactionModal({ open, onClose }) {
           onClick={() => { setType('income'); setForm(f => ({ ...f, category: 'Salary' })) }}
           className={`flex-1 py-2.5 text-[13px] font-medium flex items-center justify-center gap-2 transition-all
             ${type === 'income' ? 'bg-[#E1F5EE] text-[#085041]' : 'bg-[#F0EFF8] text-[#6B6882]'}`}>
-          <i className="ti ti-trending-up text-[14px]"></i> Income / Savings
+          <i className="ti ti-trending-up text-[14px]"></i> Income
         </button>
       </div>
 
@@ -95,14 +90,7 @@ export default function AddTransactionModal({ open, onClose }) {
 
         {/* Category always visible */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-[12px] font-medium text-[#6B6882]">
-            Category
-            {type === 'income' && (
-              <span className="text-[11px] text-[#6B6882] ml-1">
-                — pick <strong>Savings</strong> if saving toward a goal
-              </span>
-            )}
-          </label>
+          <label className="text-[12px] font-medium text-[#6B6882]">Category</label>
           <select
             value={form.category}
             onChange={e => setForm({ ...form, category: e.target.value })}
@@ -112,31 +100,11 @@ export default function AddTransactionModal({ open, onClose }) {
           </select>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          {/* Goal dropdown — only for income */}
-          {type === 'income' ? (
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-medium text-[#6B6882]">
-                Link to goal? <span className="text-[#AFA9EC] text-[11px]">(optional)</span>
-              </label>
-              <select
-                value={form.goal_id}
-                onChange={e => setForm({ ...form, goal_id: e.target.value })}
-                className="h-9 w-full"
-                style={{ borderColor: '#AFA9EC', background: '#EEEDFE', color: '#3C3489' }}
-              >
-                <option value="">-- No goal --</option>
-                {goals.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
-              </select>
-            </div>
-          ) : null}
-
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[12px] font-medium text-[#6B6882]">Date</label>
-            <input type="date" value={form.date}
-              onChange={e => setForm({ ...form, date: e.target.value })}
-              className="h-9 w-full" />
-          </div>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[12px] font-medium text-[#6B6882]">Date</label>
+          <input type="date" value={form.date}
+            onChange={e => setForm({ ...form, date: e.target.value })}
+            className="h-9 w-full" />
         </div>
 
         <div className="flex flex-col gap-1.5">
@@ -163,7 +131,7 @@ export default function AddTransactionModal({ open, onClose }) {
             variant={type === 'income' ? 'green' : 'primary'}
             className="flex-1 justify-center"
           >
-            {loading ? 'Saving...' : type === 'expense' ? 'Add expense' : form.goal_id ? 'Add to goal' : 'Add income'}
+            {loading ? 'Saving...' : type === 'expense' ? 'Add expense' : 'Add income'}
           </Btn>
         </div>
       </form>
